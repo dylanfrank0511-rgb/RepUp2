@@ -487,23 +487,52 @@ button:active { transform: scale(.91); }
 .wcard-pill::before { content: '· '; color: var(--muted); }
 .wcard-more  { font-size: .73rem; color: var(--accent); font-weight: 700; margin-top: 3px; }
 
-.feature-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 18px;
-  margin: 18px 0 8px;
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(0,229,255,.08), rgba(245,255,0,.06));
-  border: 1px solid rgba(0,229,255,.18);
-  box-shadow: 0 14px 40px rgba(0,0,0,.32);
-  text-decoration: none;
+/* ── FEATURE GRID (home page) ────────────────────────────────── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-.feature-card:hover { transform: translateY(-1px); }
-.feature-card .title { font-size: 1rem; font-weight: 900; color: #fff; }
-.feature-card .detail { font-size: .82rem; color: var(--text2); line-height: 1.5; margin-top: 6px; }
-.feature-card .icon { font-size: 1.55rem; color: var(--gold); }
+
+.fcard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px 14px 14px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: border-color .2s,
+              transform .22s cubic-bezier(.34,1.56,.64,1),
+              box-shadow .2s;
+  box-shadow: var(--sh-card);
+  position: relative;
+  overflow: hidden;
+}
+.fcard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--grad);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.fcard:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: var(--sh-card2); }
+.fcard:hover::before { opacity: 1; }
+.fcard:active { transform: scale(.95); }
+
+.fcard-icon { font-size: 1.55rem; line-height: 1; margin-bottom: 2px; }
+.fcard-name { font-size: .88rem; font-weight: 800; color: var(--t1); letter-spacing: -.1px; }
+.fcard-sub  { font-size: .68rem; color: var(--t3); }
+
+/* wide card spans both columns */
+.fcard.wide { grid-column: span 2; flex-direction: row; align-items: center; gap: 14px; padding: 14px 18px; }
+.fcard.wide .fcard-icon { font-size: 1.8rem; flex-shrink: 0; }
+.fcard.wide .fcard-name { font-size: .96rem; }
+.fcard.wide .fcard-arrow { margin-left: auto; font-size: 1.1rem; color: var(--t3); flex-shrink: 0; }
 
 
 .dbk {

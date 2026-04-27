@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#00E5FF"/>
   <link rel="icon" type="image/svg+xml" href="icon.svg"/>
   <link rel="apple-touch-icon" href="icon.svg"/>
-  <link rel="stylesheet" href="style.css?v=15"/>
+  <link rel="stylesheet" href="style.css?v=16"/>
 </head>
 <body>
 <div id="app">
@@ -18,9 +18,6 @@
     <div class="logo">RepUp</div>
     <div style="display:flex;gap:8px;align-items:center">
       <button id="btn-new-workout" class="btn btn-o btn-sm" style="display:none">+ Workout</button>
-      <a href="./progress.html" style="width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;flex-shrink:0;transition:border-color .15s" title="Progress">📈</a>
-      <a href="./vault.html" style="width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;flex-shrink:0;transition:border-color .15s" title="Vault">🏆</a>
-      <a href="./guide.html" style="width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;flex-shrink:0;transition:border-color .15s" title="Exercise Guide">💪</a>
       <button class="ibt" id="btn-avatar">?</button>
     </div>
   </header>
@@ -34,13 +31,39 @@
         <button class="btn btn-g btn-sm" id="btn-edit-sched">Edit Schedule</button>
       </div>
       <div class="sstrip" id="sstrip"></div>
-      <a href="./muscle.html" class="feature-card">
-        <div>
-          <div class="title">Muscle Activation Guide</div>
-          <div class="detail">Scroll through muscle-focused diagrams and lift tips for your most common workouts.</div>
-        </div>
-        <div class="icon">→</div>
-      </a>
+
+      <div class="sec-row" style="margin-top:18px"><span class="sec">Explore</span></div>
+      <div class="feature-grid">
+        <a href="./progress.html" class="fcard">
+          <div class="fcard-icon">📈</div>
+          <div class="fcard-name">Progress</div>
+          <div class="fcard-sub">Charts &amp; strength trends</div>
+        </a>
+        <a href="./vault.html" class="fcard">
+          <div class="fcard-icon">🏆</div>
+          <div class="fcard-name">Vault</div>
+          <div class="fcard-sub">PRs &amp; templates</div>
+        </a>
+        <a href="./guide.html" class="fcard">
+          <div class="fcard-icon">💪</div>
+          <div class="fcard-name">Exercise Guide</div>
+          <div class="fcard-sub">How-to &amp; muscle maps</div>
+        </a>
+        <a href="./muscle.html" class="fcard">
+          <div class="fcard-icon">🧬</div>
+          <div class="fcard-name">Muscle Diagrams</div>
+          <div class="fcard-sub">Activation by exercise</div>
+        </a>
+        <a href="./planner.html" class="fcard wide">
+          <div class="fcard-icon">📊</div>
+          <div>
+            <div class="fcard-name">Overload Planner</div>
+            <div class="fcard-sub">Your 12-week progression roadmap</div>
+          </div>
+          <div class="fcard-arrow">→</div>
+        </a>
+      </div>
+
       <div class="sec-row"><span class="sec">My Workouts</span></div>
       <div class="wgrid" id="wgrid"></div>
       <div class="empty hidden" id="empty-home">
