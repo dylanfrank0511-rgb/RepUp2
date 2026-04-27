@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#00E5FF"/>
   <link rel="icon" type="image/svg+xml" href="icon.svg"/>
   <link rel="apple-touch-icon" href="icon.svg"/>
-  <link rel="stylesheet" href="style.css?v=14"/>
+  <link rel="stylesheet" href="style.css?v=15"/>
 </head>
 <body>
 <div id="app">
@@ -204,6 +204,7 @@
     <button class="nbt on" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
     <button class="nbt" data-v="history"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>History</button>
     <button class="nbt" data-v="tools"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Tools</button>
+    <button class="nbt" data-v="plan"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/><line x1="18" y1="6" x2="22" y2="2"/><line x1="18" y1="6" x2="14" y2="6"/></svg>Plan</button>
     <button class="nbt" data-v="profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
   </nav>
 </div>
@@ -419,7 +420,10 @@ function showView(v){
   if(v==='tools')   initTools();
 }
 document.querySelectorAll('.nbt').forEach(function(btn){
-  btn.addEventListener('click', function(){ showView(this.dataset.v); });
+  btn.addEventListener('click', function(){
+    if (this.dataset.v === 'plan') { window.location.href = 'planner.html'; return; }
+    showView(this.dataset.v);
+  });
 });
 ge('btn-avatar').addEventListener('click', function(){ showView('profile'); });
 
@@ -922,7 +926,13 @@ ge('btn-add-profile').addEventListener('click',function(){
 function updateAvatar(){ ge('btn-avatar').textContent=profile.charAt(0).toUpperCase(); }
 
 // ─── PWA ─────────────────────────────────────────────────────
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(function(){});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+  /* Auto-reload when a new service worker takes control so fresh HTML/CSS loads */
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    window.location.reload();
+  });
+}
 
 // ─── INIT ────────────────────────────────────────────────────
 updateAvatar();
