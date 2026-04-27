@@ -1,4 +1,4 @@
-const CACHE = 'repup-v17';
+const CACHE = 'repup-v18';
 /* CSS is intentionally excluded — always fetched from network via ?v= param */
 const ASSETS = ['./', './index.html', './repup.html', './progress.html', './vault.html', './exercises.html', './guide.html', './muscle.html', './planner.html', './icon.svg', './manifest.json'];
 

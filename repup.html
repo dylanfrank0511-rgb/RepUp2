@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#00E5FF"/>
   <link rel="icon" type="image/svg+xml" href="icon.svg"/>
   <link rel="apple-touch-icon" href="icon.svg"/>
-  <link rel="stylesheet" href="style.css?v=17"/>
+  <link rel="stylesheet" href="style.css?v=18"/>
 </head>
 <body>
 <div id="app">
@@ -209,6 +209,7 @@
 
     <!-- PROFILE -->
     <div class="view" id="v-profile">
+      <div id="acct-section"></div>
       <div class="phero" id="phero"></div>
       <div class="sec-row"><span class="sec">All Profiles</span></div>
       <div id="plist"></div>
@@ -913,8 +914,117 @@ function parseWorkoutText(text){
   return days.filter(function(d){return d.exercises.length>0;});
 }
 
+// ─── ACCOUNT ─────────────────────────────────────────────────
+var AK2 = 'ru3-accounts', SIK = 'ru3-signed-in';
+var acctTab = 'in';
+
+function getAccounts(){ return JSON.parse(localStorage.getItem(AK2)||'[]'); }
+function saveAccounts(a){ localStorage.setItem(AK2, JSON.stringify(a)); }
+function getSignedIn(){ return localStorage.getItem(SIK)||''; }
+function setSignedIn(e){ if(e) localStorage.setItem(SIK,e); else localStorage.removeItem(SIK); }
+
+async function pwHash(email, pw){
+  var str = email.toLowerCase()+'||repup||'+pw;
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+
+function renderAccount(){
+  var el = ge('acct-section'); if(!el) return;
+  var email = getSignedIn();
+  if(email){
+    el.innerHTML =
+      '<div class="acct-card">'+
+        '<div class="acct-bar"></div>'+
+        '<div class="acct-body">'+
+          '<div class="acct-signed">'+
+            '<div class="acct-avatar">'+esc(email.charAt(0).toUpperCase())+'</div>'+
+            '<div class="acct-info-col">'+
+              '<div class="acct-email">'+esc(email)+'</div>'+
+              '<div class="acct-status">✓ Signed In</div>'+
+            '</div>'+
+            '<button class="btn btn-g btn-sm" id="btn-acct-out">Sign Out</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    ge('btn-acct-out').addEventListener('click', function(){
+      setSignedIn(''); updateAvatar(); renderAccount();
+    });
+  } else {
+    var isUp = acctTab === 'up';
+    el.innerHTML =
+      '<div class="acct-card">'+
+        '<div class="acct-bar"></div>'+
+        '<div class="acct-body">'+
+          '<div class="acct-title">Account</div>'+
+          '<div class="acct-sub">Sign in or create a free account to save your progress.</div>'+
+          '<div class="acct-tabs">'+
+            '<button class="acct-tab'+(!isUp?' on':'')+'" id="atab-in">Sign In</button>'+
+            '<button class="acct-tab'+(isUp?' on':'')+'" id="atab-up">Create Account</button>'+
+          '</div>'+
+          '<div class="fg"><label>Email</label>'+
+            '<input type="email" id="acct-email" placeholder="you@example.com" autocapitalize="none" autocorrect="off" autocomplete="email"/>'+
+          '</div>'+
+          '<div class="fg"><label>Password</label>'+
+            '<input type="password" id="acct-pass" placeholder="Min. 6 characters" autocomplete="'+(isUp?'new':'current')+'-password"/>'+
+          '</div>'+
+          (isUp?'<div class="fg"><label>Confirm Password</label><input type="password" id="acct-pass2" placeholder="Repeat your password" autocomplete="new-password"/></div>':'')+
+          '<div class="acct-msg" id="acct-msg"></div>'+
+          '<button class="btn btn-o" style="width:100%" id="btn-acct-go">'+(isUp?'Create Account →':'Sign In →')+'</button>'+
+        '</div>'+
+      '</div>';
+
+    ge('atab-in').addEventListener('click', function(){ acctTab='in'; renderAccount(); });
+    ge('atab-up').addEventListener('click', function(){ acctTab='up'; renderAccount(); });
+
+    ['acct-email','acct-pass','acct-pass2'].forEach(function(id){
+      var inp = ge(id); if(!inp) return;
+      inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); ge('btn-acct-go').click(); } });
+    });
+
+    ge('btn-acct-go').addEventListener('click', async function(){
+      var emailVal = (ge('acct-email').value||'').trim().toLowerCase();
+      var passVal  = ge('acct-pass').value||'';
+      var msgEl    = ge('acct-msg');
+      var setMsg   = function(m, ok){ msgEl.textContent=m; msgEl.style.color=ok?'var(--green)':'var(--red)'; };
+
+      if(!emailVal){ setMsg('✗ Email is required.'); ge('acct-email').focus(); return; }
+      if(!emailVal.includes('@')){ setMsg('✗ Enter a valid email address.'); return; }
+      if(passVal.length < 6){ setMsg('✗ Password must be at least 6 characters.'); return; }
+
+      var btn = ge('btn-acct-go');
+      btn.disabled = true; btn.textContent = '…';
+      var accounts = getAccounts();
+      var hash;
+      try { hash = await pwHash(emailVal, passVal); }
+      catch(e){ setMsg('✗ Error — try reloading the page.'); btn.disabled=false; btn.textContent=isUp?'Create Account →':'Sign In →'; return; }
+
+      if(isUp){
+        var p2 = ge('acct-pass2') ? ge('acct-pass2').value : '';
+        if(passVal !== p2){ setMsg('✗ Passwords do not match.'); btn.disabled=false; btn.textContent='Create Account →'; return; }
+        if(accounts.find(function(a){return a.email===emailVal;})){
+          setMsg('✗ An account already exists with this email.'); btn.disabled=false; btn.textContent='Create Account →'; return;
+        }
+        accounts.push({email:emailVal, hash:hash, created:new Date().toISOString()});
+        saveAccounts(accounts);
+        setSignedIn(emailVal);
+        setMsg('✓ Account created! Welcome.', true);
+        setTimeout(function(){ updateAvatar(); renderAccount(); }, 700);
+      } else {
+        var found = accounts.find(function(a){return a.email===emailVal;});
+        if(!found){ setMsg('✗ No account found for this email. Create one?'); btn.disabled=false; btn.textContent='Sign In →'; return; }
+        if(found.hash !== hash){ setMsg('✗ Incorrect password.'); btn.disabled=false; btn.textContent='Sign In →'; return; }
+        setSignedIn(emailVal);
+        setMsg('✓ Signed in!', true);
+        setTimeout(function(){ updateAvatar(); renderAccount(); }, 500);
+      }
+    });
+  }
+}
+
 // ─── PROFILE ─────────────────────────────────────────────────
 function renderProfile(){
+  renderAccount();
   var ps=getProfs();
   ge('phero').innerHTML=
     '<div class="pav">'+esc(profile.charAt(0).toUpperCase())+'</div>'+
@@ -946,7 +1056,10 @@ ge('btn-add-profile').addEventListener('click',function(){
   var ps=getProfs(); if(ps.includes(name)){alert('Name already exists.');return;}
   ps.push(name); saveProfs(ps); ge('inp-pname').value=''; switchProfile(name);
 });
-function updateAvatar(){ ge('btn-avatar').textContent=profile.charAt(0).toUpperCase(); }
+function updateAvatar(){
+  var email = getSignedIn();
+  ge('btn-avatar').textContent = (email ? email : profile).charAt(0).toUpperCase();
+}
 
 // ─── PWA ─────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
