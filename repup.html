@@ -15,7 +15,7 @@
 <body>
 <div id="app">
   <header>
-    <div class="logo">RepUp</div>
+    <div class="logo" id="logo-home" style="cursor:pointer">RepUp</div>
     <div style="display:flex;gap:8px;align-items:center">
       <button id="btn-new-workout" class="btn btn-o btn-sm" style="display:none">+ Workout</button>
       <button class="ibt" id="btn-avatar">?</button>
@@ -450,6 +450,7 @@ document.querySelectorAll('.nbt').forEach(function(btn){
   });
 });
 ge('btn-avatar').addEventListener('click', function(){ showView('profile'); });
+ge('logo-home').addEventListener('click', function(){ showView('home'); });
 
 // ─── MODALS ──────────────────────────────────────────────────
 function openModal(id){ ge(id).classList.remove('hidden'); }
