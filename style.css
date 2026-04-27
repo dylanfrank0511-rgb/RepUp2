@@ -122,7 +122,7 @@ body::after {
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   flex-direction: column;
-  max-width: 640px;
+  max-width: 960px;
   margin: 0 auto;
   z-index: 1;
 }
@@ -190,7 +190,7 @@ main {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 14px 15px 10px;
+  padding: 16px 18px 10px;
   -webkit-overflow-scrolling: touch;
 }
 main::-webkit-scrollbar { display: none; }
@@ -386,20 +386,17 @@ button:active { transform: scale(.91); }
 /* ── SCHEDULE STRIP ──────────────────────────────────────────── */
 .sstrip {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
+  gap: 6px;
   padding-bottom: 4px;
-  scrollbar-width: none;
 }
-.sstrip::-webkit-scrollbar { display: none; }
 
 .sday {
-  flex: 0 0 auto;
-  min-width: 64px;
+  flex: 1;
+  min-width: 0;
   background: var(--card);
   border: 1.5px solid var(--border);
-  border-radius: 18px;
-  padding: 11px 8px;
+  border-radius: 16px;
+  padding: 10px 4px;
   text-align: center;
   transition: all .22s cubic-bezier(.4,0,.2,1);
   box-shadow: var(--sh-card);
@@ -416,26 +413,25 @@ button:active { transform: scale(.91); }
   box-shadow: 0 0 28px rgba(0,229,255,.25), var(--sh-card);
 }
 .sday-d {
-  font-size: .52rem;
+  font-size: .48rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: .6px;
+  letter-spacing: .5px;
   color: var(--muted);
 }
-.sday-n { font-size: 1.38rem; font-weight: 900; margin: 3px 0; }
+.sday-n { font-size: 1.2rem; font-weight: 900; margin: 2px 0; }
 .sday.today .sday-n { color: var(--accent); }
 .sday-w {
-  font-size: .55rem;
+  font-size: .46rem;
   font-weight: 700;
   color: var(--accent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 60px;
 }
 
 /* ── WORKOUT CARDS ───────────────────────────────────────────── */
-.wgrid { display: grid; gap: 14px; }
+.wgrid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
 
 .wcard {
   background: var(--card);
@@ -490,7 +486,7 @@ button:active { transform: scale(.91); }
 /* ── FEATURE GRID (home page) ────────────────────────────────── */
 .feature-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -528,8 +524,8 @@ button:active { transform: scale(.91); }
 .fcard-name { font-size: .88rem; font-weight: 800; color: var(--t1); letter-spacing: -.1px; }
 .fcard-sub  { font-size: .68rem; color: var(--t3); }
 
-/* wide card spans both columns */
-.fcard.wide { grid-column: span 2; flex-direction: row; align-items: center; gap: 14px; padding: 14px 18px; }
+/* wide card spans all columns */
+.fcard.wide { grid-column: span 4; flex-direction: row; align-items: center; gap: 14px; padding: 14px 18px; }
 .fcard.wide .fcard-icon { font-size: 1.8rem; flex-shrink: 0; }
 .fcard.wide .fcard-name { font-size: .96rem; }
 .fcard.wide .fcard-arrow { margin-left: auto; font-size: 1.1rem; color: var(--t3); flex-shrink: 0; }
@@ -1005,6 +1001,36 @@ textarea { resize: vertical; min-height: 72px; }
 .empty p  { margin-bottom: 18px; line-height: 1.72; font-size: .88rem; }
 
 /* ── RESPONSIVE ──────────────────────────────────────────────── */
-@media (max-width: 380px) {
+
+/* Small phones — keep things usable */
+@media (max-width: 420px) {
   .frow { grid-template-columns: 1fr 1fr; }
+  .feature-grid { grid-template-columns: 1fr 1fr; }
+  .fcard.wide   { grid-column: span 2; }
+  .wgrid        { grid-template-columns: 1fr; }
+  .sday-n       { font-size: 1.1rem; }
+}
+
+/* Medium phones (421–639px) */
+@media (min-width: 421px) and (max-width: 639px) {
+  .feature-grid { grid-template-columns: 1fr 1fr; }
+  .fcard.wide   { grid-column: span 2; }
+  .wgrid        { grid-template-columns: 1fr 1fr; }
+}
+
+/* Tablet and larger (640px+) — full horizontal spread */
+@media (min-width: 640px) {
+  main    { padding: 20px 28px 10px; }
+  header  { padding: 16px 28px; padding-top: calc(16px + env(safe-area-inset-top)); }
+  .feature-grid { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+  .fcard.wide   { grid-column: span 4; }
+  .wgrid  { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sday   { border-radius: 18px; padding: 12px 8px; }
+  .sday-d { font-size: .55rem; }
+  .sday-n { font-size: 1.38rem; }
+  .sday-w { font-size: .52rem; }
+  .fcard  { padding: 20px 16px 16px; }
+  .fcard-icon { font-size: 1.8rem; }
+  .fcard-name { font-size: .95rem; }
+  .fcard-sub  { font-size: .74rem; }
 }
