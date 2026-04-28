@@ -62,6 +62,14 @@
           </div>
           <div class="fcard-arrow">→</div>
         </a>
+        <a href="./overload.html" class="fcard wide">
+          <div class="fcard-icon">🚨</div>
+          <div>
+            <div class="fcard-name">Overload Alerts</div>
+            <div class="fcard-sub">Exercises stuck at the same weight</div>
+          </div>
+          <div class="fcard-arrow">→</div>
+        </a>
       </div>
 
       <div class="sec-row"><span class="sec">My Workouts</span></div>
@@ -117,6 +125,7 @@
         <button class="stab on" data-panel="p-import">📋 Import Notes</button>
         <button class="stab" data-panel="p-exinfo">💪 Exercise Info</button>
         <button class="stab" data-panel="p-ai">✨ AI Generate</button>
+        <button class="stab" data-panel="p-overload">🚨 Overload</button>
       </div>
 
       <!-- IMPORT NOTES -->
@@ -182,6 +191,16 @@
           </div>
           <div id="exinfo-cards"></div>
         </div>
+      </div>
+
+      <!-- OVERLOAD ALERTS -->
+      <div id="p-overload" class="hidden">
+        <div style="margin-bottom:16px">
+          <div style="font-size:1.1rem;font-weight:900;margin-bottom:5px">🚨 Progressive Overload Alerts</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.5">Get notified when you've been lifting the same weight for too long — and see exactly what to increase.</div>
+        </div>
+        <a href="./overload.html" class="btn btn-o" style="display:block;text-align:center;text-decoration:none;padding:14px;font-size:.95rem;font-weight:800">Open Overload Dashboard →</a>
+        <div id="overload-preview" style="margin-top:16px"></div>
       </div>
 
       <!-- AI GENERATE -->
@@ -728,11 +747,58 @@ function renderHistory(){
 }
 
 // ─── TOOLS ───────────────────────────────────────────────────
-var panels = ['p-import','p-exinfo','p-ai'];
+var panels = ['p-import','p-exinfo','p-overload','p-ai'];
 function initTools(){
   var k=localStorage.getItem('ru3-api-key');
   if(k){ge('ai-key').value=k;ge('key-msg').textContent='✓ Key saved';ge('key-msg').style.color='var(--green)';}
 }
+
+/* ── Overload preview in Tools panel ── */
+function renderOverloadPreview(){
+  var cont = ge('overload-preview'); if(!cont) return;
+  var map = {};
+  S.log.slice().reverse().forEach(function(entry){
+    (entry.exercises||[]).forEach(function(e){
+      if(!e.name) return;
+      var key = e.name.trim().toLowerCase();
+      if(!map[key]) map[key]={name:e.name.trim(),sessions:[]};
+      var w=parseFloat(String(e.weight||'').replace(/[^0-9.]/g,''))||0;
+      var r=parseInt(String(e.reps||'').replace(/[^0-9]/g,''))||0;
+      var s=parseInt(String(e.sets||'').replace(/[^0-9]/g,''))||1;
+      map[key].sessions.push({score:w>0?w*r*s:r*s,weight:e.weight,reps:e.reps,sets:e.sets});
+    });
+  });
+  var alerts=[];
+  Object.values(map).forEach(function(ex){
+    if(ex.sessions.length<3) return;
+    var last=ex.sessions.length-1;
+    var ref=ex.sessions[last].score, streak=1;
+    for(var i=last-1;i>=0;i--){ if(ex.sessions[i].score>=ref){streak++;ref=ex.sessions[i].score;}else break; }
+    if(streak>=3) alerts.push({name:ex.name,streak:streak,level:streak>=7?'critical':streak>=5?'danger':'warn',weight:ex.sessions[last].weight,reps:ex.sessions[last].reps,sets:ex.sessions[last].sets});
+  });
+  alerts.sort(function(a,b){var o={critical:0,danger:1,warn:2};return(o[a.level]-o[b.level])||b.streak-a.streak;});
+  if(!alerts.length){
+    cont.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem">No alerts yet — keep logging!</div>';
+    return;
+  }
+  var colors={critical:'#FF00AA',danger:'#FF6B35',warn:'#F5FF00'};
+  cont.innerHTML='<div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px">Top Alerts</div>'+
+    alerts.slice(0,3).map(function(a){
+      return '<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid '+colors[a.level]+';border-radius:var(--r-sm);padding:10px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px">'+
+        '<div style="flex:1"><div style="font-size:.85rem;font-weight:800">'+esc(a.name)+'</div>'+
+        '<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+esc(a.sets)+'×'+esc(a.reps)+'  @  '+esc(a.weight)+'</div></div>'+
+        '<div style="font-size:.65rem;font-weight:800;color:'+colors[a.level]+';white-space:nowrap">'+a.streak+' sessions</div>'+
+      '</div>';
+    }).join('')+
+    (alerts.length>3?'<div style="text-align:center;font-size:.74rem;color:var(--muted);padding:4px 0">+'+( alerts.length-3)+' more — open dashboard</div>':'');
+}
+
+document.querySelectorAll('.stab').forEach(function(btn){
+  /* re-render overload preview when that tab is selected */
+  if(btn.dataset.panel==='p-overload'){
+    btn.addEventListener('click',function(){ setTimeout(renderOverloadPreview,0); });
+  }
+});
 document.querySelectorAll('.stab').forEach(function(btn){
   btn.addEventListener('click',function(){
     document.querySelectorAll('.stab').forEach(function(b){b.classList.remove('on');});
