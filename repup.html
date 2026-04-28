@@ -17,7 +17,7 @@
   <header>
     <div class="logo" id="logo-home" style="cursor:pointer">RepUp</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <button id="btn-new-workout" class="btn btn-o btn-sm" style="display:none">+ Workout</button>
+      <button id="btn-new-workout" class="btn btn-o btn-sm">+ Workout</button>
       <button class="ibt" id="btn-avatar">?</button>
     </div>
   </header>
@@ -454,7 +454,7 @@ function showView(v){
   currentView = v;
   document.querySelectorAll('.view').forEach(function(el){ el.classList.remove('on'); });
   var el = ge('v-'+v); if(el) el.classList.add('on');
-  ge('btn-new-workout').style.display = (v==='home')?'':'none';
+  ge('btn-new-workout').style.display = (v==='home') ? 'inline-flex' : 'none';
   document.querySelectorAll('.nbt').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
   ge('mscroll').scrollTop = 0;
   if(v==='home')    renderHome();
@@ -470,6 +470,9 @@ document.querySelectorAll('.nbt').forEach(function(btn){
 });
 ge('btn-avatar').addEventListener('click', function(){ showView('profile'); });
 ge('logo-home').addEventListener('click', function(){ showView('home'); });
+
+/* Ensure correct initial state on every page load */
+showView('home');
 
 // ─── MODALS ──────────────────────────────────────────────────
 function openModal(id){ ge(id).classList.remove('hidden'); }
