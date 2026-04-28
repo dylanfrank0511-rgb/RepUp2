@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="theme-color" content="#00E5FF"/>
   <link rel="icon" type="image/svg+xml" href="icon.svg"/>
-  <link rel="stylesheet" href="style.css?v=16"/>
+  <link rel="stylesheet" href="style.css?v=19"/>
   <style>
     html,body { height:100%; }
     body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
@@ -238,6 +238,18 @@
       background:var(--grad); border-radius:0 0 5px 5px;
       box-shadow:0 0 18px rgba(0,229,255,1), 0 0 36px rgba(0,229,255,.5);
     }
+
+    /* ── YOUTUBE PILL (collapsed row) ── */
+    .yt-pill {
+      display:inline-flex; align-items:center; gap:4px;
+      padding:5px 10px; border-radius:9px; flex-shrink:0;
+      background:rgba(255,60,60,.1); border:1px solid rgba(255,80,80,.25);
+      color:#FF8888; font-size:.68rem; font-weight:700;
+      text-decoration:none; white-space:nowrap;
+      transition:background .15s, border-color .15s;
+      -webkit-user-select:none; user-select:none;
+    }
+    .yt-pill:hover { background:rgba(255,60,60,.22); border-color:rgba(255,80,80,.45); color:#FFAAAA; }
 
     /* ── CUSTOM EXERCISE DELETE ── */
     .del-custom-btn {
@@ -496,7 +508,7 @@ function makeSVG(muscles, view){
   return '<svg viewBox="0 0 100 285" xmlns="http://www.w3.org/2000/svg">'+BASE+o+'</svg>';
 }
 
-// ─── EXERCISE DATABASE (50 exercises) ────────────────────────────────────────
+// ─── EXERCISE DATABASE (79 exercises) ────────────────────────────────────────
 var DB = [
   // ── BACK ─────────────────────────────────────────────────────────────────
   { id:'deadlift', group:'back', icon:'⚡', name:'Deadlift', sets:'4 × 5',
@@ -804,6 +816,215 @@ var DB = [
     setup:'Kneel facing a high cable with a rope attachment. Hold the rope at either side of your head. Hips stay stationary throughout.',
     exec:'Crunch your elbows toward your knees by rounding your spine — not by pulling with your arms or hips. Squeeze the abs hard at the bottom. Return slowly.',
     tip:'The key is spinal flexion, not hip flexion — many people get this wrong and train their hip flexors instead.' },
+
+  // ── BACK (continued) ──────────────────────────────────────────────────────
+  { id:'t-bar-row', group:'back', icon:'✚', name:'T-Bar Row', sets:'4 × 8–10',
+    muscles:{'lat-l':'p','lat-r':'p','rhomboid':'p','rear-delt-l':'p','rear-delt-r':'p','bicep-l':'s','bicep-r':'s','lower-back':'s','trap-m':'s'},
+    primary:['Lats','Rhomboids','Rear Delts'], secondary:['Biceps','Lower Back','Traps'],
+    setup:'Load one end of a barbell into a landmine or anchor it in a corner. Stand over the bar, hinge at hips to ~45°, grip a close-handle attachment or the bar itself just below the plates.',
+    exec:'Row the bar into your lower chest by driving your elbows back and up. Squeeze your shoulder blades hard at the top. Lower under full control — do not round your lower back.',
+    tip:'A wider grip shifts more load to the lats; a closer grip hammers the rhomboids and mid-traps.' },
+
+  { id:'single-arm-row', group:'back', icon:'💪', name:'Single Arm Dumbbell Row', sets:'4 × 10 each',
+    muscles:{'lat-l':'p','lat-r':'p','rhomboid':'p','rear-delt-l':'p','rear-delt-r':'p','bicep-l':'s','bicep-r':'s','lower-back':'s'},
+    primary:['Lats','Rhomboids','Rear Delts'], secondary:['Biceps','Lower Back'],
+    setup:'Place one knee and hand on a bench. Other foot flat on the floor. Back parallel to the ground, spine neutral. Dumbbell hanging directly under your shoulder.',
+    exec:'Row the dumbbell to your hip by driving your elbow back and up. Shoulder blade should fully retract at the top. Lower the dumbbell until your arm is fully extended and your lat stretches.',
+    tip:'Think of your hand as a hook — pull with your elbow, not your bicep.' },
+
+  { id:'chest-supported-row', group:'back', icon:'🏋️', name:'Chest Supported Row', sets:'3 × 10–12',
+    muscles:{'rhomboid':'p','rear-delt-l':'p','rear-delt-r':'p','lat-l':'p','lat-r':'p','bicep-l':'s','bicep-r':'s','trap-m':'s'},
+    primary:['Rhomboids','Rear Delts','Lats'], secondary:['Biceps','Traps'],
+    setup:'Set an incline bench to 30–45°. Lie face down with your chest on the pad, feet on the floor. Hold dumbbells hanging below the bench with a neutral grip.',
+    exec:'Row both dumbbells up by driving elbows out to your sides. Squeeze shoulder blades together at the top. Lower slowly until arms are fully extended.',
+    tip:'Chest support eliminates lower back cheating — every rep is honest back work.' },
+
+  { id:'straight-arm-pulldown', group:'back', icon:'⬇️', name:'Straight Arm Pulldown', sets:'3 × 12–15',
+    muscles:{'lat-l':'p','lat-r':'p','rear-delt-l':'s','rear-delt-r':'s'},
+    primary:['Lats'], secondary:['Rear Delts'],
+    setup:'High cable with a straight bar or rope. Stand back with arms extended at face height, slight forward hinge, elbows locked straight throughout.',
+    exec:'Pull the bar down in a wide arc to your thighs by extending your shoulders — keep your arms straight throughout. Squeeze your lats hard at the bottom. Return slowly with a full stretch.',
+    tip:'Locking the elbows isolates the lats completely — no bicep involvement at all.' },
+
+  { id:'pendlay-row', group:'back', icon:'🏋️', name:'Pendlay Row', sets:'4 × 5–6',
+    muscles:{'lat-l':'p','lat-r':'p','rhomboid':'p','rear-delt-l':'p','rear-delt-r':'p','lower-back':'p','trap-m':'s','bicep-l':'s','bicep-r':'s'},
+    primary:['Lats','Rhomboids','Rear Delts','Lower Back'], secondary:['Traps','Biceps'],
+    setup:'Bar on the floor, hip-width stance. Hinge until torso is nearly horizontal — parallel to the floor. Overhand grip just outside hip-width.',
+    exec:'Explosively row the bar to your lower chest, keeping your torso stationary. Lower the bar all the way back to the floor, reset, and repeat. Each rep starts from a dead stop.',
+    tip:'The dead stop removes momentum — this is a power and mass builder for the entire back.' },
+
+  // ── CHEST (continued) ─────────────────────────────────────────────────────
+  { id:'flat-db-press', group:'chest', icon:'🏋️', name:'Flat Dumbbell Press', sets:'3 × 8–12',
+    muscles:{'chest-l':'p','chest-r':'p','front-delt-l':'p','front-delt-r':'p','tricep-l':'s','tricep-r':'s'},
+    primary:['Chest','Front Delts'], secondary:['Triceps'],
+    setup:'Flat bench. Dumbbells at chest height, elbows at 70° from your torso. Feet flat on the floor, shoulder blades pinched back.',
+    exec:'Press upward, allowing dumbbells to arc slightly inward. At the top they should nearly touch. Lower with control, allowing a deeper stretch than a barbell press.',
+    tip:'Dumbbells allow a greater range of motion at the bottom — use it to get a deeper pec stretch.' },
+
+  { id:'decline-bench', group:'chest', icon:'📐', name:'Decline Bench Press', sets:'3 × 8–10',
+    muscles:{'chest-l':'p','chest-r':'p','front-delt-l':'s','front-delt-r':'s','tricep-l':'p','tricep-r':'p'},
+    primary:['Lower Chest','Triceps'], secondary:['Front Delts'],
+    setup:'Decline bench with feet secured. Bar wider than shoulder-width. Shoulder blades retracted and depressed. Core braced.',
+    exec:'Lower the bar to your lower chest (below the nipple line) with elbows at roughly 70°. Press explosively to full extension. The decline angle shifts the emphasis to the lower chest.',
+    tip:'The lower chest is often underdeveloped — decline pressing two times per week can fix this.' },
+
+  { id:'low-to-high-fly', group:'chest', icon:'↗️', name:'Low to High Cable Fly', sets:'3 × 12–15',
+    muscles:{'chest-l':'p','chest-r':'p','front-delt-l':'s','front-delt-r':'s'},
+    primary:['Upper Chest'], secondary:['Front Delts'],
+    setup:'Both cables at the lowest position. Stand center with a staggered stance. Handle in each hand, slight forward lean.',
+    exec:'Sweep both handles up and together in a wide arc, ending at eye or forehead level. Squeeze at the top and cross slightly. Lower slowly with a full pec stretch at the bottom.',
+    tip:'This angle of pull targets the upper chest that incline presses can miss — use it as a finisher.' },
+
+  { id:'incline-barbell', group:'chest', icon:'📐', name:'Incline Barbell Press', sets:'4 × 6–8',
+    muscles:{'chest-l':'p','chest-r':'p','front-delt-l':'p','front-delt-r':'p','tricep-l':'s','tricep-r':'s'},
+    primary:['Upper Chest','Front Delts'], secondary:['Triceps'],
+    setup:'Bench at 30°. Grip just wider than shoulder-width. Shoulder blades retracted, feet flat. Eyes under the bar.',
+    exec:'Lower the bar to the upper chest (clavicle area), keeping elbows at 70°. Drive up and slightly back. Maintain upper back arch throughout.',
+    tip:'30° is the sweet spot for upper chest — steeper angles shift the work almost entirely to your front delts.' },
+
+  // ── SHOULDERS (continued) ─────────────────────────────────────────────────
+  { id:'upright-row', group:'shoulders', icon:'⬆️', name:'Upright Row', sets:'3 × 10–12',
+    muscles:{'trap-u':'p','trap-m':'p','front-delt-l':'p','front-delt-r':'p','rear-delt-l':'s','rear-delt-r':'s','bicep-l':'s','bicep-r':'s'},
+    primary:['Upper Traps','Front Delts'], secondary:['Rear Delts','Biceps'],
+    setup:'Barbell or EZ bar with a shoulder-width or narrower grip. Stand tall, bar hanging at hips.',
+    exec:'Pull the bar straight up along your body, leading with your elbows — they should rise higher than your wrists. Stop at chin level. Lower with control.',
+    tip:'A shoulder-width grip is safer for your rotator cuff than a narrow grip — keep elbows wide.' },
+
+  { id:'landmine-press', group:'shoulders', icon:'🔥', name:'Landmine Press', sets:'3 × 10 each',
+    muscles:{'front-delt-l':'p','front-delt-r':'p','tricep-l':'p','tricep-r':'p','chest-l':'s','chest-r':'s','trap-u':'s'},
+    primary:['Front Delts','Triceps'], secondary:['Upper Chest','Traps'],
+    setup:'Load one end of a barbell into a landmine or corner. Stand in a staggered stance. Cup the bar end in one hand at shoulder height.',
+    exec:'Press the bar up and slightly out at an arc, fully extending the arm. Lower under control. The arced pressing path is easier on the shoulder joint than a straight overhead press.',
+    tip:'Excellent for people with shoulder impingement — the arc reduces joint stress significantly.' },
+
+  { id:'front-raises', group:'shoulders', icon:'⬆️', name:'Front Raises', sets:'3 × 12–15',
+    muscles:{'front-delt-l':'p','front-delt-r':'p','trap-u':'s'},
+    primary:['Front Delts'], secondary:['Upper Traps'],
+    setup:'Hold dumbbells in front of your thighs with a pronated (palms down) or hammer grip. Stand tall, slight knee bend.',
+    exec:'Raise both dumbbells in front of you to shoulder height or slightly above. Control the descent over 2–3 seconds. Do not swing or use momentum.',
+    tip:'Alternate arms to allow a slight rest between reps — this lets you use better form with heavier weight.' },
+
+  // ── ARMS (continued) ──────────────────────────────────────────────────────
+  { id:'ez-bar-curl', group:'arms', icon:'〰️', name:'EZ Bar Curl', sets:'3 × 8–12',
+    muscles:{'bicep-l':'p','bicep-r':'p','forearm-l':'s','forearm-r':'s'},
+    primary:['Biceps'], secondary:['Forearms'],
+    setup:'EZ bar with a semi-supinated (angled) grip. Stand tall, elbows pinned to your sides. The angled grip reduces wrist stress compared to a straight bar.',
+    exec:'Curl the bar in a smooth arc to shoulder height. Squeeze hard at the top. Lower with a 2–3 second eccentric. Full extension at the bottom every rep.',
+    tip:'The EZ bar is much easier on your wrists if straight bar curls cause discomfort — same bicep stimulus.' },
+
+  { id:'concentration-curl', group:'arms', icon:'🧠', name:'Concentration Curl', sets:'3 × 12 each',
+    muscles:{'bicep-l':'p','bicep-r':'p','forearm-l':'s','forearm-r':'s'},
+    primary:['Biceps (Peak)'], secondary:['Forearms'],
+    setup:'Sit on a bench, legs spread. Brace your elbow against your inner thigh. Dumbbell hanging down with full arm extension.',
+    exec:'Curl the dumbbell in a smooth arc, supinating your wrist at the top for maximum contraction. Squeeze hard. Lower all the way to a dead hang.',
+    tip:'Supinating your wrist at the top (turning your pinky toward your shoulder) maximises bicep peak contraction.' },
+
+  { id:'cable-curl', group:'arms', icon:'〰️', name:'Cable Curl', sets:'3 × 12–15',
+    muscles:{'bicep-l':'p','bicep-r':'p','forearm-l':'s','forearm-r':'s'},
+    primary:['Biceps'], secondary:['Forearms'],
+    setup:'Low cable with a straight bar or EZ attachment. Stand close, underhand grip, elbows pinned to your sides.',
+    exec:'Curl the bar toward your shoulders, keeping your elbows locked in place. Squeeze hard at the top. Let the cable pull your arms to full extension at the bottom — this constant tension is the advantage over free weights.',
+    tip:'Cable maintains tension at the bottom where dumbbells have almost none — great for adding volume.' },
+
+  { id:'skull-crushers', group:'arms', icon:'💀', name:'Skull Crushers', sets:'3 × 10–12',
+    muscles:{'tricep-l':'p','tricep-r':'p'},
+    primary:['Triceps (Long Head)'], secondary:[],
+    setup:'Lie on a flat bench. Hold an EZ bar or straight bar directly over your chest with a close, overhand grip. Arms fully extended, perpendicular to the floor.',
+    exec:'Lower the bar by bending your elbows only — upper arms stay vertical and stationary. Stop when the bar is just above your forehead. Press back to full extension.',
+    tip:'Keep your upper arms completely still — any flaring forward reduces tricep isolation.' },
+
+  { id:'tricep-kickbacks', group:'arms', icon:'🦵', name:'Tricep Kickbacks', sets:'3 × 12–15 each',
+    muscles:{'tricep-l':'p','tricep-r':'p'},
+    primary:['Triceps'], secondary:[],
+    setup:'One hand and knee on a bench. Upper arm parallel to the floor and pinned against your side. Elbow bent at 90°.',
+    exec:'Extend your forearm back until your arm is fully straight. Squeeze the tricep hard at full extension for one count. Lower slowly. Full extension is mandatory — stopping short cuts the movement in half.',
+    tip:'Only the forearm moves — your upper arm stays fixed and parallel to the floor the entire time.' },
+
+  { id:'spider-curl', group:'arms', icon:'🕷️', name:'Spider Curls', sets:'3 × 10–12',
+    muscles:{'bicep-l':'p','bicep-r':'p','forearm-l':'s','forearm-r':'s'},
+    primary:['Biceps'], secondary:['Forearms'],
+    setup:'Set a preacher bench or incline bench to 45–60°. Lie face down, arms hanging straight over the front. Dumbbells or EZ bar.',
+    exec:'Curl the weight up, keeping your upper arms pressed against the bench. Squeeze hard at the top. Lower with a slow, controlled eccentric to full extension.',
+    tip:'One of the best bicep exercises because it provides maximum tension in both the stretched and contracted position.' },
+
+  // ── LEGS (continued) ──────────────────────────────────────────────────────
+  { id:'front-squat', group:'legs', icon:'🏋️', name:'Front Squat', sets:'4 × 4–6',
+    muscles:{'quad-l':'p','quad-r':'p','glute-l':'s','glute-r':'s','abs':'s'},
+    primary:['Quads'], secondary:['Glutes','Core'],
+    setup:'Bar rests on your front delts, arms crossed or in a clean grip. Elbows high and forward. Upright torso is mandatory — any forward lean causes the bar to roll.',
+    exec:'Sit straight down, keeping an extremely upright torso. Drive through your whole foot to stand, pushing elbows up throughout to keep the bar in place.',
+    tip:'The front-loaded bar forces an upright torso — this puts significantly more load on the quads than a back squat.' },
+
+  { id:'goblet-squat', group:'legs', icon:'🥤', name:'Goblet Squat', sets:'3 × 12–15',
+    muscles:{'quad-l':'p','quad-r':'p','glute-l':'p','glute-r':'p','abs':'s'},
+    primary:['Quads','Glutes'], secondary:['Core'],
+    setup:'Hold a dumbbell or kettlebell vertically at your chest. Feet shoulder-width, toes out 15–30°. Keep the weight pressed into your chest throughout.',
+    exec:'Squat down between your elbows — elbows should brush your inner knees at the bottom. Stay upright. Drive through your heels to stand and squeeze glutes at lockout.',
+    tip:'The goblet squat is the best teaching tool for a perfect squat — the weight naturally creates an upright torso.' },
+
+  { id:'sumo-deadlift', group:'legs', icon:'🤼', name:'Sumo Deadlift', sets:'4 × 4–5',
+    muscles:{'glute-l':'p','glute-r':'p','quad-l':'p','quad-r':'p','hamstring-l':'p','hamstring-r':'p','lower-back':'s','trap-m':'s','forearm-b-l':'s','forearm-b-r':'s'},
+    primary:['Glutes','Quads','Hamstrings'], secondary:['Lower Back','Traps','Forearms'],
+    setup:'Wide stance, toes pointed out 45°. Grip inside your legs, shoulder-width. Hips lower than conventional, chest tall, shins nearly vertical.',
+    exec:'Push your knees out and drive through your whole foot. Keep bar close to your legs. Hips and shoulders rise at the same rate. Lock out hips and knees simultaneously.',
+    tip:'Sumo reduces the bar path length and lower back strain — ideal for lifters with long torsos.' },
+
+  { id:'hack-squat', group:'legs', icon:'🦾', name:'Hack Squat', sets:'3 × 10–12',
+    muscles:{'quad-l':'p','quad-r':'p','glute-l':'s','glute-r':'s','hamstring-l':'s','hamstring-r':'s'},
+    primary:['Quads'], secondary:['Glutes','Hamstrings'],
+    setup:'Pad against your shoulders and upper back. Feet shoulder-width, low on the platform (low foot placement = more quad). Release the safety handles.',
+    exec:'Lower in a controlled squat until your thighs are just past parallel. Drive through your whole foot to press back up. Do not lock out your knees at the top.',
+    tip:'Placing your feet lower on the platform dramatically increases the quad demand.' },
+
+  { id:'step-ups', group:'legs', icon:'🪜', name:'Step Ups', sets:'3 × 12 each',
+    muscles:{'quad-l':'p','quad-r':'p','glute-l':'p','glute-r':'p','hamstring-l':'s','hamstring-r':'s','calf-l':'s','calf-r':'s'},
+    primary:['Quads','Glutes'], secondary:['Hamstrings','Calves'],
+    setup:'Stand facing a bench or box at knee height. Hold dumbbells at your sides or a barbell on your back.',
+    exec:'Step your working leg up, pressing through your heel to drive your body up. Bring your trailing leg up to standing. Step back down under control. Complete all reps on one side before switching.',
+    tip:'Drive through the heel of the elevated foot — not your toes — to maximise glute activation.' },
+
+  { id:'seated-calf-raise', group:'legs', icon:'🦶', name:'Seated Calf Raise', sets:'4 × 15–20',
+    muscles:{'calf-l':'p','calf-r':'p'},
+    primary:['Soleus (Deep Calf)'], secondary:[],
+    setup:'Seated calf raise machine (or barbell on knees with a board under your feet). Pads on your thighs just above the knee.',
+    exec:'Lower heels as far as possible for a full stretch. Rise up as high as possible and hold for one second. No bouncing — slow and deliberate.',
+    tip:'The seated position bends the knee which takes the gastrocnemius out of the movement — isolating the deeper soleus.' },
+
+  // ── CORE (continued) ──────────────────────────────────────────────────────
+  { id:'bicycle-crunch', group:'core', icon:'🚴', name:'Bicycle Crunches', sets:'3 × 20–30',
+    muscles:{'abs':'p','oblique-l':'p','oblique-r':'p','hip-l':'s','hip-r':'s'},
+    primary:['Abs','Obliques'], secondary:['Hip Flexors'],
+    setup:'Lie on your back, hands behind your head, elbows wide. Shoulders lifted off the floor. Lower back lightly pressed into the mat.',
+    exec:'Bring one knee toward your chest while rotating the opposite elbow to meet it — full rotation from the torso. Extend the other leg simultaneously. Alternate slowly and deliberately.',
+    tip:'Slow is better than fast — a fast, jerky movement uses momentum, not muscles.' },
+
+  { id:'dead-bug', group:'core', icon:'🐛', name:'Dead Bug', sets:'3 × 8 each side',
+    muscles:{'abs':'p','oblique-l':'p','oblique-r':'p','lower-back':'s'},
+    primary:['Abs','Obliques'], secondary:['Lower Back'],
+    setup:'Lie on your back. Arms extended straight toward the ceiling. Knees bent at 90°, shins parallel to the floor. Press your lower back firmly into the mat — it must stay there throughout.',
+    exec:'Simultaneously lower your right arm overhead and extend your left leg toward the floor. Stop just before they touch the ground. Bring back to center and switch sides.',
+    tip:'Your lower back must NEVER leave the floor — if it does, reduce your range of motion.' },
+
+  { id:'side-plank', group:'core', icon:'↔️', name:'Side Plank', sets:'3 × 30–45s each',
+    muscles:{'oblique-l':'p','oblique-r':'p','abs':'s'},
+    primary:['Obliques'], secondary:['Abs'],
+    setup:'Lie on your side. Prop up on your forearm, elbow directly below your shoulder. Stack your feet or stagger them for stability. Body forms a straight diagonal line.',
+    exec:'Lift your hips until your body is perfectly straight from head to heels. Hold, breathing steadily. Your top hip should not sag or pike — maintain the straight line.',
+    tip:'Add a hip dip (lower and raise your hip slightly) for an oblique burn that will humble you.' },
+
+  { id:'v-ups', group:'core', icon:'✌️', name:'V-Ups', sets:'3 × 12–15',
+    muscles:{'abs':'p','hip-l':'p','hip-r':'p','oblique-l':'s','oblique-r':'s'},
+    primary:['Abs','Hip Flexors'], secondary:['Obliques'],
+    setup:'Lie flat on your back, arms extended overhead and legs straight. Lower back pressed into the mat.',
+    exec:'Simultaneously raise your legs and your torso, reaching your hands toward your feet. At the top, your body forms a V shape. Lower both your legs and torso slowly back to the floor.',
+    tip:'Keep the movement controlled on the way down — the eccentric is where the most core work happens.' },
+
+  { id:'pallof-press', group:'core', icon:'↔️', name:'Pallof Press', sets:'3 × 10–12 each',
+    muscles:{'abs':'p','oblique-l':'p','oblique-r':'p'},
+    primary:['Abs','Obliques (Anti-Rotation)'], secondary:[],
+    setup:'Cable set at chest height. Stand sideways to the cable, feet shoulder-width. Hold the handle with both hands at your chest, several steps away from the machine.',
+    exec:'Press the handle straight out in front of you until your arms are fully extended. Hold for one second — resist the cable\'s pull to rotate you. Bring it back to your chest. Do not rotate.',
+    tip:'This is an anti-rotation exercise — the core\'s most functional role. Start light and focus on resisting all rotation.' },
 ];
 
 // ─── BALANCE TRACKER ─────────────────────────────────────────────────────────
@@ -884,6 +1105,7 @@ function cardHTML(ex){
         '<div class="ex-grp-tag">' + esc(GRUP_LABELS[ex.group]||ex.group||'') + '</div>' +
         '<div class="ex-chips-row">' + priC + '</div>' +
       '</div>' +
+      '<a href="' + ytURL(ex.name) + '" target="_blank" rel="noopener" class="yt-pill">▶ Tutorial</a>' +
       '<div class="ex-arrow">›</div>' +
     '</div>' +
     '<div class="ex-body">' + body + '</div>' +
@@ -915,6 +1137,11 @@ function renderList(){
   }
 
   container.innerHTML = filtered.map(cardHTML).join('');
+
+  // YouTube pills — stop propagation so tap goes to YouTube, not expand
+  container.querySelectorAll('.yt-pill').forEach(function(a){
+    a.addEventListener('click', function(e){ e.stopPropagation(); });
+  });
 
   // Expand / collapse
   container.querySelectorAll('.ex-collapsed').forEach(function(head){

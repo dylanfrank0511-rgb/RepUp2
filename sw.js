@@ -1,6 +1,6 @@
 const CACHE = 'repup-v19';
 /* CSS is intentionally excluded — always fetched from network via ?v= param */
-const ASSETS = ['./', './index.html', './repup.html', './progress.html', './vault.html', './exercises.html', './guide.html', './muscle.html', './planner.html', './overload.html', './icon.svg', './manifest.json'];
+const ASSETS = ['./', './index.html', './repup.html', './progress.html', './vault.html', './exercises.html', './guide.html', './muscle.html', './planner.html', './overload.html', './library.html', './icon.svg', './manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
